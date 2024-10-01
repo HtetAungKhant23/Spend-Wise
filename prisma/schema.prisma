@@ -11,24 +11,23 @@ model User {
   id        String  @id @default(uuid())
   name      String
   email     String  @unique
+  password  String
+  pinCode   String? @map("pin_code")
   isDeleted Boolean @default(false) @map("is_deleted")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  note      Note[]
 
   @@map("users")
 }
 
-model Note {
-  id        String  @id @default(uuid())
-  text      String
-  userId    String? @map("user_id")
-  user      User?   @relation(references: [id], fields: [userId])
-  isDeleted Boolean @default(false) @map("is_deleted")
+model Otp {
+  id    String @id @default(uuid())
+  code  String
+  email String @unique
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("notes")
+  @@map("otps")
 }

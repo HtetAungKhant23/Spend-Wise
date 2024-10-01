@@ -1,17 +1,17 @@
 import { DynamicModule, ForwardReference, Module, Type } from '@nestjs/common';
 import { RouterModule as NestJsRouterModule } from '@nestjs/core';
-import { RoutesNoteModule } from './route/router.note.module';
+import { RoutesAuthModule } from './route/router.auth.module';
 
 @Module({})
 export class RouterModule {
   static forRoot(): DynamicModule {
     const imports: (DynamicModule | Type<any> | Promise<DynamicModule> | ForwardReference<any>)[] = [];
     imports.push(
-      RoutesNoteModule,
+      RoutesAuthModule,
       NestJsRouterModule.register([
         {
-          path: '/note',
-          module: RoutesNoteModule,
+          path: '/auth',
+          module: RoutesAuthModule,
         },
       ]),
     );
