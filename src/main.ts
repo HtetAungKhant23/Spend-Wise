@@ -28,7 +28,7 @@ async function bootstrap() {
     logger: WinstonModule.createLogger(winstonLoggerOptions),
   });
 
-  app.enableCors();
+  app.enableCors({ origin: '*' });
   app.useGlobalPipes(new ValidationPipe());
   const configService = app.get(ConfigService);
   const tz = configService.get<string>('app.tz');

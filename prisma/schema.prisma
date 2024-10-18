@@ -12,11 +12,13 @@ model User {
   name      String
   email     String  @unique
   password  String
-  pinCode   String? @map("pin_code")
+  isVerify  Boolean @default(false) @map("is_verify")
   isDeleted Boolean @default(false) @map("is_deleted")
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  targetBudgets TargetBudget[]
+  accounts      Account[]
 
   @@map("users")
 }
@@ -30,4 +32,82 @@ model Otp {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("otps")
+}
+
+model Account {
+  id        String       @id @default(uuid())
+  name      String
+  type      ACCOUNT_TYPE @default(WALLET)
+  amount    Int
+  isDeleted Boolean      @default(false) @map("is_deleted")
+  userId    String       @map("user_id")
+  user      User         @relation(fields: [userId], references: [id])
+
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  transactions Transaction[]
+
+  @@map("accounts")
+}
+
+model Transaction {
+  id          String           @id @default(uuid())
+  remark      String
+  description String?
+  image       String?
+  amount      Int
+  type        TRANSACTION_TYPE @default(INCOME)
+  accountId   String           @map("account_id")
+  account     Account          @relation(fields: [accountId], references: [id])
+  categoryId  String           @map("category_id")
+  category    Category         @relation(fields: [categoryId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("transactions")
+}
+
+model Category {
+  id        String  @id @default(uuid())
+  name      String
+  icon      String?
+  isDeleted Boolean @default(false) @map("is_deleted")
+
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  transactions  Transaction[]
+  targetBudgets TargetBudget[]
+
+  @@map("categories")
+}
+
+model TargetBudget {
+  id         String           @id @default(uuid())
+  amount     Int
+  type       TRANSACTION_TYPE @default(EXPENSE)
+  startDate  DateTime         @map("start_date")
+  endDate    DateTime         @map("end_date")
+  isDeleted  Boolean          @default(false) @map("is_deleted")
+  categoryId String           @map("category_id")
+  category   Category         @relation(fields: [categoryId], references: [id])
+  userId     String           @map("user_id")
+  user       User             @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("target_budgets")
+}
+
+enum ACCOUNT_TYPE {
+  WALLET
+  BANK
+  PAY
+}
+
+enum TRANSACTION_TYPE {
+  INCOME
+  EXPENSE
+  TRANSFER
 }
