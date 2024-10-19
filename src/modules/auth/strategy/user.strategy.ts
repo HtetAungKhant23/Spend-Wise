@@ -14,7 +14,6 @@ export class UserStrategy extends PassportStrategy(Strategy, 'user') {
   }
 
   async validate(payload: { id: string; email: string }) {
-    console.log({ payload });
     const user = await this.dbService.user.findUnique({ where: { id: payload.id } });
 
     if (!user) {

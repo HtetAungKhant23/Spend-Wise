@@ -19,6 +19,7 @@ model User {
   updatedAt     DateTime       @updatedAt @map("updated_at")
   targetBudgets TargetBudget[]
   accounts      Account[]
+  categories    Category[]
 
   @@map("users")
 }
@@ -70,9 +71,12 @@ model Transaction {
 
 model Category {
   id        String  @id @default(uuid())
-  name      String
+  name      String  @unique()
   icon      String?
+  isPrivate Boolean @default(false) @map("is_private")
   isDeleted Boolean @default(false) @map("is_deleted")
+  userId    String? @map("user_id")
+  user      User?   @relation(fields: [userId], references: [id])
 
   createdAt     DateTime       @default(now()) @map("created_at")
   updatedAt     DateTime       @updatedAt @map("updated_at")
