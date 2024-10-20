@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@app/shared/prisma/prisma.service';
+import { BadRequestException } from '@app/core/exceptions/bad-request.exception';
+import { ExceptionConstants } from '@app/core/exceptions/constants';
 import { IAccountService } from './interface/account-service.interface';
 import { AccountDto } from './dto/account.dto';
 import { AccountEntity } from './entity/account.entity';
@@ -9,6 +11,21 @@ export class AccountService implements IAccountService {
   constructor(private readonly dbService: PrismaService) {}
 
   async create(userId: string, dto: AccountDto): Promise<void> {
+    const existAccount = await this.dbService.account.findFirst({
+      where: {
+        subType: dto.subType,
+        userId,
+        isDeleted: false,
+      },
+    });
+
+    if (existAccount) {
+      throw new BadRequestException({
+        message: `Account already exist.`,
+        code: ExceptionConstants.BadRequestCodes.RESOURCE_ALREADY_EXISTS,
+      });
+    }
+
     const account = await this.dbService.account.create({
       data: {
         name: dto.name,

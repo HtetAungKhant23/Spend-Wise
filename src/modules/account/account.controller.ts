@@ -51,6 +51,7 @@ export class AccountController {
         },
       };
     } catch (err) {
+      console.log('account err', err);
       throw new BadRequestException({
         message: err.message,
         cause: new Error(err),

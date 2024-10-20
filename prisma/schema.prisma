@@ -50,7 +50,7 @@ model Account {
   updatedAt    DateTime      @updatedAt @map("updated_at")
   transactions Transaction[]
 
-  @@unique([userId, name])
+  @@unique([userId, subType])
   @@map("accounts")
 }
 
