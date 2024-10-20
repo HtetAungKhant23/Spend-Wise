@@ -40,7 +40,7 @@ export class AuthController {
         message: err.message,
         cause: new Error(err),
         code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
-        description: 'Failed to fetch me.',
+        description: 'Failed to fetch me',
       });
     }
   }
@@ -68,7 +68,7 @@ export class AuthController {
         message: err.message,
         cause: new Error(err),
         code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
-        description: 'Failed to register.',
+        description: 'Failed to register',
       });
     }
   }
@@ -96,7 +96,7 @@ export class AuthController {
         message: err.message,
         cause: new Error(err),
         code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
-        description: 'Failed to resend otp.',
+        description: 'Failed to resend otp',
       });
     }
   }
@@ -118,7 +118,7 @@ export class AuthController {
         message: err.message,
         cause: new Error(err),
         code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
-        description: 'Failed to verify email.',
+        description: 'Failed to verify email',
       });
     }
   }
@@ -140,7 +140,7 @@ export class AuthController {
         message: err.message,
         cause: new Error(err),
         code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
-        description: 'Failed to login.',
+        description: 'Failed to login',
       });
     }
   }

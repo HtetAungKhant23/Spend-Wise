@@ -4,6 +4,7 @@ import { BadRequestException } from '@app/core/exceptions/bad-request.exception'
 import { ExceptionConstants } from '@app/core/exceptions/constants';
 import { hashText, verifyText } from '@app/utils/hashText';
 import { JwtService } from '@nestjs/jwt';
+import * as dayjs from 'dayjs';
 import { IAuthService } from './interfaces/auth-service.interface';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
@@ -88,25 +89,34 @@ export class AuthService implements IAuthService {
       where: {
         email: dto.email,
         code: dto.code,
+        expiredAt: {
+          gte: dayjs().toDate(),
+        },
       },
     });
-    if (otp) {
-      await this.dbService.user.update({
-        where: {
-          email: dto.email,
-        },
-        data: {
-          isVerify: true,
-        },
+
+    if (!otp) {
+      throw new BadRequestException({
+        message: `Invalid code`,
+        code: ExceptionConstants.BadRequestCodes.RESOURCE_NOT_FOUND,
       });
-      await this.dbService.otp.delete({
-        where: {
-          id: otp.id,
-        },
-      });
-      return true;
     }
-    return false;
+
+    await this.dbService.user.update({
+      where: {
+        email: dto.email,
+      },
+      data: {
+        isVerify: true,
+      },
+    });
+    await this.dbService.otp.delete({
+      where: {
+        id: otp.id,
+      },
+    });
+
+    return true;
   }
 
   async resendOtp(email: string): Promise<number> {
@@ -137,9 +147,11 @@ export class AuthService implements IAuthService {
       create: {
         email,
         code: code.toString(),
+        expiredAt: dayjs(Date.now()).add(1, 'minute').toDate(),
       },
       update: {
         code: code.toString(),
+        expiredAt: dayjs(Date.now()).add(1, 'minute').toDate(),
       },
     });
 

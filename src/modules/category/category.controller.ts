@@ -32,7 +32,7 @@ export class CategoryController {
         message: err.message,
         cause: new Error(err),
         code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
-        description: 'Failed to create category.',
+        description: 'Failed to create category',
       });
     }
   }
@@ -55,7 +55,7 @@ export class CategoryController {
         message: err.message,
         cause: new Error(err),
         code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
-        description: 'Failed to fetch category.',
+        description: 'Failed to fetch category',
       });
     }
   }

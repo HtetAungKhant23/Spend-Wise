@@ -25,9 +25,10 @@ model User {
 }
 
 model Otp {
-  id    String @id @default(uuid())
-  code  String
-  email String @unique
+  id        String   @id @default(uuid())
+  code      String
+  email     String   @unique
+  expiredAt DateTime @map("expired_at")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -48,6 +49,7 @@ model Account {
   updatedAt    DateTime      @updatedAt @map("updated_at")
   transactions Transaction[]
 
+  @@unique([userId, name])
   @@map("accounts")
 }
 
@@ -60,8 +62,8 @@ model Transaction {
   type        TRANSACTION_TYPE @default(INCOME)
   accountId   String           @map("account_id")
   account     Account          @relation(fields: [accountId], references: [id])
-  categoryId  String           @map("category_id")
-  category    Category         @relation(fields: [categoryId], references: [id])
+  categoryId  String?          @map("category_id")
+  category    Category?        @relation(fields: [categoryId], references: [id])
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -71,7 +73,7 @@ model Transaction {
 
 model Category {
   id        String  @id @default(uuid())
-  name      String  @unique()
+  name      String
   icon      String?
   isPrivate Boolean @default(false) @map("is_private")
   isDeleted Boolean @default(false) @map("is_deleted")
@@ -83,6 +85,7 @@ model Category {
   transactions  Transaction[]
   targetBudgets TargetBudget[]
 
+  @@unique([userId, name])
   @@map("categories")
 }
 
