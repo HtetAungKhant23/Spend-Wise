@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@app/shared/prisma/prisma.service';
 import { IAccountService } from './interface/account-service.interface';
 import { AccountDto } from './dto/account.dto';
+import { AccountEntity } from './entity/account.entity';
 
 @Injectable()
 export class AccountService implements IAccountService {
@@ -29,7 +30,16 @@ export class AccountService implements IAccountService {
     });
   }
 
-  async get(userId: string): Promise<any> {
-    return userId;
+  async get(userId: string): Promise<AccountEntity[]> {
+    const accounts = await this.dbService.account.findMany({
+      where: {
+        userId,
+        isDeleted: false,
+      },
+    });
+
+    return accounts.map((account) => {
+      return new AccountEntity(account.name, account.type, account.subType, account.balance);
+    });
   }
 }

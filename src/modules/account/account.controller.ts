@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Inject, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Inject, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { CurrentUser, IAuthUser } from '@app/core/decorators/auth.decorators';
 import { BadRequestException } from '@app/core/exceptions/bad-request.exception';
@@ -33,6 +33,29 @@ export class AccountController {
         cause: new Error(err),
         code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
         description: 'Failed to create account',
+      });
+    }
+  }
+
+  @Get('')
+  @ApiBearerAuth()
+  @UseGuards(UserAuthGuard)
+  async get(@CurrentUser() user: IAuthUser) {
+    try {
+      const accounts = await this.accountService.get(user.id);
+      return {
+        _data: accounts,
+        _metadata: {
+          message: 'Account successfully fetched',
+          statusCode: HttpStatus.CREATED,
+        },
+      };
+    } catch (err) {
+      throw new BadRequestException({
+        message: err.message,
+        cause: new Error(err),
+        code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
+        description: 'Failed to fetch account',
       });
     }
   }
