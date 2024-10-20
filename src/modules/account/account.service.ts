@@ -12,7 +12,8 @@ export class AccountService implements IAccountService {
       data: {
         name: dto.name,
         type: dto.type,
-        amount: dto.amount,
+        subType: dto.subType,
+        balance: dto.balance,
         userId,
       },
     });
@@ -21,7 +22,7 @@ export class AccountService implements IAccountService {
       data: {
         remark: 'account create transaction',
         description: 'account create transaction',
-        amount: dto.amount,
+        amount: dto.balance,
         type: 'INCOME',
         accountId: account.id,
       },

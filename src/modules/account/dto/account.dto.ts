@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ACCOUNT_TYPE } from '@prisma/client';
+import { ACCOUNT_TYPE, SUB_ACCOUNT_TYPE } from '@prisma/client';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class AccountDto {
@@ -12,8 +12,12 @@ export class AccountDto {
   @IsNotEmpty()
   type: ACCOUNT_TYPE;
 
+  @ApiProperty({ enum: SUB_ACCOUNT_TYPE, example: SUB_ACCOUNT_TYPE.WALLET })
+  @IsNotEmpty()
+  subType: SUB_ACCOUNT_TYPE;
+
   @ApiProperty({ type: Number, example: 200000 })
   @IsNotEmpty()
   @IsNumber()
-  amount: number;
+  balance: number;
 }
