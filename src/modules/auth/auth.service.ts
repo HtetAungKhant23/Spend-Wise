@@ -163,7 +163,7 @@ export class AuthService implements IAuthService {
       { id, email },
       {
         secret: secretKey,
-        expiresIn: '1h',
+        expiresIn: '1m',
       },
     );
     return token;

@@ -144,4 +144,26 @@ export class AuthController {
       });
     }
   }
+
+  // @Post('reset-password')
+  // @ApiBody({ type: ResendOtpDto, description: 'Reset password.' })
+  // async resetPassword(@Body() dto: ResendOtpDto) {
+  //   try {
+  //     await this.authService.resetPassword(dto);
+  //     return {
+  //       _data: {},
+  //       _metadata: {
+  //         message: 'Reset password success.',
+  //         statusCode: HttpStatus.OK,
+  //       },
+  //     };
+  //   } catch (err) {
+  //     throw new BadRequestException({
+  //       message: err.message,
+  //       cause: new Error(err),
+  //       code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
+  //       description: 'Failed to reset password',
+  //     });
+  //   }
+  // }
 }
