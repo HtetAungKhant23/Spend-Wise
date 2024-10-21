@@ -10,7 +10,7 @@ import { AccountEntity } from './entity/account.entity';
 export class AccountService implements IAccountService {
   constructor(private readonly dbService: PrismaService) {}
 
-  async create(userId: string, dto: AccountDto): Promise<void> {
+  async create(userId: string, dto: AccountDto): Promise<any> {
     const existAccount = await this.dbService.account.findFirst({
       where: {
         subType: dto.subType,

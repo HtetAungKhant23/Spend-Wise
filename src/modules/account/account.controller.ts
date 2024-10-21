@@ -1,8 +1,9 @@
 import { Body, Controller, Get, HttpStatus, Inject, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { CurrentUser, IAuthUser } from '@app/core/decorators/auth.decorators';
-import { BadRequestException } from '@app/core/exceptions/bad-request.exception';
+
 import { ExceptionConstants } from '@app/core/exceptions/constants';
+import { BadRequestException } from '@app/core/exceptions/bad-request.exception';
 import { AccountService } from './account.service';
 import { IAccountService } from './interface/account-service.interface';
 import { UserAuthGuard } from '../auth/guard/user.auth.guard';
@@ -51,7 +52,6 @@ export class AccountController {
         },
       };
     } catch (err) {
-      console.log('account err', err);
       throw new BadRequestException({
         message: err.message,
         cause: new Error(err),

@@ -14,9 +14,9 @@ export class BadRequestExceptionFilter implements ExceptionFilter {
     const { httpAdapter } = this.httpAdapterHost;
 
     const ctx = host.switchToHttp();
-    const request = ctx.getRequest<Request>();
+    const request: any = ctx.getRequest<Request>();
+    const traceId = request.headers['x-request-id'] || '';
     const httpStatus = exception.getStatus();
-    const traceId = request.headers.get('x-request-id') || '';
     exception.setTraceId(traceId);
     exception.setPath(httpAdapter.getRequestUrl(ctx.getRequest()));
     const responseBody = exception.generateHttpResponseBody();
