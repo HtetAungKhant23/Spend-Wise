@@ -56,7 +56,7 @@ export class AccountService implements IAccountService {
     });
 
     return accounts.map((account) => {
-      return new AccountEntity(account.name, account.type, account.subType, account.balance);
+      return new AccountEntity(account.id, account.name, account.type, account.subType, account.balance);
     });
   }
 }

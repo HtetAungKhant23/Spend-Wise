@@ -53,7 +53,7 @@ export class CategoryService implements ICategoryService {
     });
 
     return categories.map((category) => {
-      return new CategoryEntity(category.name, category?.icon || '', category.isPrivate);
+      return new CategoryEntity(category.id, category.name, category?.icon || '', category.isPrivate);
     });
   }
 }
