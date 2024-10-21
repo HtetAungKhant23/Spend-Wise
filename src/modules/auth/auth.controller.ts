@@ -32,7 +32,7 @@ export class AuthController {
         _data: res,
         _metadata: {
           message: 'Me successfully fetched.',
-          statusCode: HttpStatus.CREATED,
+          statusCode: HttpStatus.OK,
         },
       };
     } catch (err) {
@@ -88,7 +88,7 @@ export class AuthController {
         _data: {},
         _metadata: {
           message: 'Resend otp success.',
-          statusCode: HttpStatus.OK,
+          statusCode: HttpStatus.NO_CONTENT,
         },
       };
     } catch (err) {

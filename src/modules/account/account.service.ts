@@ -59,4 +59,28 @@ export class AccountService implements IAccountService {
       return new AccountEntity(account.id, account.name, account.type, account.subType, account.balance);
     });
   }
+
+  async edit(id: string, name: string): Promise<void> {
+    await this.dbService.account.update({
+      where: {
+        id,
+        isDeleted: false,
+      },
+      data: {
+        name,
+      },
+    });
+  }
+
+  async delete(id: string): Promise<void> {
+    // need to test it is good when delete account, recreate it
+    await this.dbService.account.update({
+      where: {
+        id,
+      },
+      data: {
+        isDeleted: true,
+      },
+    });
+  }
 }

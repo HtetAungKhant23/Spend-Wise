@@ -47,7 +47,7 @@ export class CategoryController {
         _data: categories,
         _metadata: {
           message: 'Category successfully fetched',
-          statusCode: HttpStatus.CREATED,
+          statusCode: HttpStatus.OK,
         },
       };
     } catch (err) {
