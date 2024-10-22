@@ -10,7 +10,7 @@ import { CategoryEntity } from './entity/category.entity';
 export class CategoryService implements ICategoryService {
   constructor(private readonly dbService: PrismaService) {}
 
-  async create(dto: CategoryDto, userId: string): Promise<void> {
+  async create(dto: CategoryDto, userId: string): Promise<CategoryEntity> {
     const existCategory = await this.dbService.category.findFirst({
       where: {
         name: dto.name,
@@ -27,7 +27,7 @@ export class CategoryService implements ICategoryService {
       });
     }
 
-    await this.dbService.category.create({
+    const category = await this.dbService.category.create({
       data: {
         name: dto.name,
         icon: dto?.icon,
@@ -35,6 +35,8 @@ export class CategoryService implements ICategoryService {
         ...(dto.private && { userId }),
       },
     });
+
+    return new CategoryEntity(category.id, category.name, category?.icon || '', category.isPrivate);
   }
 
   async get(userId: string): Promise<CategoryEntity[]> {
