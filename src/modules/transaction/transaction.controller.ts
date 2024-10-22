@@ -1,6 +1,10 @@
-import { BadRequestException, Controller, HttpStatus, Inject, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { BadRequestException, Body, Controller, HttpStatus, Inject, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ExceptionConstants } from '@app/core/exceptions/constants';
+import { FileInterceptor } from '@nestjs/platform-express/multer';
+import { diskStorage } from 'multer';
+import { v4 as uuidv4 } from 'uuid';
+import { CloudinaryService } from '@app/shared/upload/cloudinary.service';
 import { TransactionService } from './transaction.service';
 import { ITransactionService } from './interface/transaction-service.interface';
 import { TransactionDto } from './dto/transaction.dto';
@@ -9,15 +13,34 @@ import { UserAuthGuard } from '../auth/guard/user.auth.guard';
 @ApiTags('Transaction')
 @Controller({ version: '1' })
 export class TransactionController {
-  constructor(@Inject(TransactionService) private transactionService: ITransactionService) {}
+  constructor(
+    @Inject(TransactionService) private transactionService: ITransactionService,
+    private cloudinaryService: CloudinaryService,
+  ) {}
 
-  @Post()
+  @Post('')
+  @ApiConsumes('multipart/form-data')
   @ApiBearerAuth()
   @UseGuards(UserAuthGuard)
   @ApiBody({ type: TransactionDto, description: 'Create Transaction' })
-  async create(dto: TransactionDto) {
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (_, file, cb) => {
+          return cb(null, `${uuidv4()}.${file.originalname}`);
+        },
+      }),
+    }),
+  )
+  async create(@Body() dto: TransactionDto, @UploadedFile() file: Express.Multer.File) {
     try {
-      await this.transactionService.create(dto);
+      let url;
+      if (file) {
+        url = await this.cloudinaryService.uploadImage(file.path, 'transaction');
+        // to delete file in uploads folder
+      }
+      await this.transactionService.create(dto, url);
       return {
         _data: {},
         _metadata: {

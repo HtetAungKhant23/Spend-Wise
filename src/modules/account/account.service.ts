@@ -42,7 +42,7 @@ export class AccountService implements IAccountService {
         description: 'account create transaction',
         amount: dto.balance,
         type: 'INCOME',
-        accountId: account.id,
+        toId: account.id,
       },
     });
   }

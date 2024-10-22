@@ -22,6 +22,16 @@ import { ValidationExceptionFilter } from './core/filters/validatin.exception-fi
   controllers: [AppController],
   providers: [
     {
+      provide: APP_PIPE,
+      useFactory: () =>
+        new ValidationPipe({
+          exceptionFactory: (errors: ValidationError[]) => {
+            return errors[0];
+          },
+        }),
+      useClass: ValidationExceptionFilter,
+    },
+    {
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,
     },
@@ -52,15 +62,6 @@ import { ValidationExceptionFilter } from './core/filters/validatin.exception-fi
     {
       provide: APP_PIPE,
       useClass: ValidationExceptionFilter,
-    },
-    {
-      provide: APP_PIPE,
-      useFactory: () =>
-        new ValidationPipe({
-          exceptionFactory: (errors: ValidationError[]) => {
-            return errors[0];
-          },
-        }),
     },
     {
       provide: APP_INTERCEPTOR,
