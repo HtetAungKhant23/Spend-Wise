@@ -21,7 +21,7 @@ export class AccountService implements IAccountService {
 
     if (existAccount) {
       throw new BadRequestException({
-        message: `Account already exist.`,
+        message: `Account already exist`,
         code: ExceptionConstants.BadRequestCodes.RESOURCE_ALREADY_EXISTS,
       });
     }
@@ -73,7 +73,6 @@ export class AccountService implements IAccountService {
   }
 
   async delete(id: string): Promise<void> {
-    // need to test it is good when delete account, recreate it
     await this.dbService.account.update({
       where: {
         id,

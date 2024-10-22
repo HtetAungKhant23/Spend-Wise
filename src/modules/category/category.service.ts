@@ -22,7 +22,7 @@ export class CategoryService implements ICategoryService {
 
     if (existCategory) {
       throw new BadRequestException({
-        message: `Category already exist.`,
+        message: `Category already exist`,
         code: ExceptionConstants.BadRequestCodes.RESOURCE_ALREADY_EXISTS,
       });
     }
@@ -54,6 +54,34 @@ export class CategoryService implements ICategoryService {
 
     return categories.map((category) => {
       return new CategoryEntity(category.id, category.name, category?.icon || '', category.isPrivate);
+    });
+  }
+
+  async delete(userId: string, categoryId: string): Promise<void> {
+    const existCategory = await this.dbService.category.findUnique({
+      where: {
+        id: categoryId,
+        userId,
+        isPrivate: true,
+        isDeleted: false,
+      },
+    });
+
+    if (!existCategory) {
+      throw new BadRequestException({
+        message: `Category not found`,
+        code: ExceptionConstants.BadRequestCodes.RESOURCE_NOT_FOUND,
+      });
+    }
+
+    await this.dbService.category.update({
+      where: {
+        id: existCategory.id,
+      },
+      data: {
+        name: `deleted-${existCategory.name}-${Date.now()}`,
+        isDeleted: true,
+      },
     });
   }
 }

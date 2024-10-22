@@ -1,5 +1,5 @@
-import { Body, Controller, Get, HttpStatus, Inject, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, HttpStatus, Inject, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 import { BadRequestException } from '@app/core/exceptions/bad-request.exception';
 import { ExceptionConstants } from '@app/core/exceptions/constants';
 import { CurrentUser, IAuthUser } from '@app/core/decorators/auth.decorators';
@@ -56,6 +56,30 @@ export class CategoryController {
         cause: new Error(err),
         code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
         description: 'Failed to fetch category',
+      });
+    }
+  }
+
+  @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(UserAuthGuard)
+  @ApiParam({ type: String, name: 'id' })
+  async delete(@CurrentUser() user: IAuthUser, @Param('id') categoryId: string) {
+    try {
+      await this.categoryService.delete(user.id, categoryId);
+      return {
+        _data: {},
+        _metadata: {
+          message: 'Category successfully deleted',
+          statusCode: HttpStatus.NO_CONTENT,
+        },
+      };
+    } catch (err) {
+      throw new BadRequestException({
+        message: err.message,
+        cause: new Error(err),
+        code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
+        description: 'Failed to delete category',
       });
     }
   }
