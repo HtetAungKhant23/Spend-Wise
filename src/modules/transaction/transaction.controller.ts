@@ -1,5 +1,5 @@
 import { BadRequestException, Controller, HttpStatus, Inject, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { ExceptionConstants } from '@app/core/exceptions/constants';
 import { TransactionService } from './transaction.service';
 import { ITransactionService } from './interface/transaction-service.interface';
@@ -14,6 +14,7 @@ export class TransactionController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(UserAuthGuard)
+  @ApiBody({ type: TransactionDto, description: 'Create Transaction' })
   async create(dto: TransactionDto) {
     try {
       await this.transactionService.create(dto);

@@ -13,7 +13,7 @@ import { AppModule } from './app.module';
 const logger = new Logger('bootstrap');
 
 function keepAliveServer() {
-  const url = 'https://spendwise-dwlh.onrender.com/api/v1/health-check';
+  const url = 'https://spendwise-ic57.onrender.com/api/v1/health-check';
   axios
     .get(url)
     .then(() => {})

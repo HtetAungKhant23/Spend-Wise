@@ -19,9 +19,9 @@ export class CategoryController {
   @ApiBody({ type: CategoryDto, description: 'Create category' })
   async create(@Body() dto: CategoryDto, @CurrentUser() user: IAuthUser) {
     try {
-      await this.categoryService.create(dto, user.id);
+      const category = await this.categoryService.create(dto, user.id);
       return {
-        _data: {},
+        _data: category,
         _metadata: {
           message: 'Category successfully created',
           statusCode: HttpStatus.CREATED,
