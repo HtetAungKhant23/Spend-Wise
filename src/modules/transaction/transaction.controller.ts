@@ -1,10 +1,22 @@
-import { BadRequestException, Body, Controller, HttpStatus, Inject, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Inject,
+  Post,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { ExceptionConstants } from '@app/core/exceptions/constants';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { CloudinaryService } from '@app/shared/upload/cloudinary.service';
+import { CurrentUser, IAuthUser } from '@app/core/decorators/auth.decorators';
 import { TransactionService } from './transaction.service';
 import { ITransactionService } from './interface/transaction-service.interface';
 import { TransactionDto } from './dto/transaction.dto';
@@ -54,6 +66,29 @@ export class TransactionController {
         cause: new Error(err),
         code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
         description: 'Failed to create transaction',
+      });
+    }
+  }
+
+  @Get('')
+  @ApiBearerAuth()
+  @UseGuards(UserAuthGuard)
+  async get(@CurrentUser() user: IAuthUser) {
+    try {
+      const transactions = await this.transactionService.get(user.id);
+      return {
+        _data: transactions,
+        _metadata: {
+          message: 'Transactions successfully fetched',
+          statusCode: HttpStatus.OK,
+        },
+      };
+    } catch (err) {
+      throw new BadRequestException({
+        message: err.message,
+        cause: new Error(err),
+        code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
+        description: 'Failed to fetch transaction',
       });
     }
   }

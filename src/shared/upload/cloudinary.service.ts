@@ -19,7 +19,6 @@ export class CloudinaryService {
       return err;
     });
 
-    console.log(res, res.secure_url);
     return res.secure_url;
   }
 }
