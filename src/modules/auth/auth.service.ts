@@ -27,7 +27,7 @@ export class AuthService implements IAuthService {
 
     if (existUser && existUser.isVerify) {
       throw new BadRequestException({
-        message: `User already exist.`,
+        message: `User already exist`,
         code: ExceptionConstants.BadRequestCodes.RESOURCE_ALREADY_EXISTS,
       });
     }
@@ -57,7 +57,7 @@ export class AuthService implements IAuthService {
 
     if (!existUser) {
       throw new BadRequestException({
-        message: `User not found.`,
+        message: `User not found`,
         code: ExceptionConstants.BadRequestCodes.RESOURCE_NOT_FOUND,
       });
     }
@@ -66,7 +66,7 @@ export class AuthService implements IAuthService {
 
     if (!matchPw) {
       throw new BadRequestException({
-        message: `Wrong credential.`,
+        message: `Wrong credential`,
         code: ExceptionConstants.BadRequestCodes.INVALID_INPUT,
       });
     }
@@ -129,7 +129,7 @@ export class AuthService implements IAuthService {
     });
     if (!existUser) {
       throw new BadRequestException({
-        message: `Email not found.`,
+        message: `Email not found`,
         code: ExceptionConstants.BadRequestCodes.RESOURCE_NOT_FOUND,
       });
     }
