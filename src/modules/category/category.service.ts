@@ -36,7 +36,7 @@ export class CategoryService implements ICategoryService {
       },
     });
 
-    return new CategoryEntity(category.id, category.name, category?.icon || '', category.isPrivate);
+    return new CategoryEntity(category.id, category.name, category?.icon, category.isPrivate);
   }
 
   async get(userId: string): Promise<CategoryEntity[]> {
@@ -55,7 +55,7 @@ export class CategoryService implements ICategoryService {
     });
 
     return categories.map((category) => {
-      return new CategoryEntity(category.id, category.name, category?.icon || '', category.isPrivate);
+      return new CategoryEntity(category.id, category.name, category?.icon, category.isPrivate);
     });
   }
 

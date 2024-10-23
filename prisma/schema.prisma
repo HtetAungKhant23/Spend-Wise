@@ -20,6 +20,7 @@ model User {
   targetBudgets TargetBudget[]
   accounts      Account[]
   categories    Category[]
+  transactions  Transaction[]
 
   @@map("users")
 }
@@ -61,6 +62,8 @@ model Transaction {
   image       String?
   amount      Int
   type        TRANSACTION_TYPE @default(INCOME)
+  userId      String           @map("user_id")
+  user        User             @relation(fields: [userId], references: [id])
   fromId      String?          @map("from_id")
   fromAccount Account?         @relation("from", fields: [fromId], references: [id])
   toId        String?          @map("to_id")

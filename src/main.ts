@@ -13,7 +13,7 @@ import { AppModule } from './app.module';
 const logger = new Logger('bootstrap');
 
 function keepAliveServer() {
-  const url = 'https://spendwise-ic57.onrender.com/api/v1/health-check';
+  const url = 'https://spendwise-r1l1.onrender.com/api/v1/health-check';
   axios
     .get(url)
     .then(() => {})
@@ -48,7 +48,9 @@ async function bootstrap() {
   }
   createDocument(app);
   await app.listen(PORT);
-  setInterval(keepAliveServer, 60000);
+  if (process.env.NODE_ENV !== 'development') {
+    setInterval(keepAliveServer, 60000);
+  }
   logger.log(`Application listening on port ${PORT}`);
 }
 

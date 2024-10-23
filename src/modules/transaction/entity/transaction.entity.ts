@@ -5,9 +5,9 @@ export class TransactionEntity {
 
   remark: string;
 
-  description?: string;
+  description: string | null;
 
-  image?: string;
+  image: string | null;
 
   amount: number;
 
@@ -15,16 +15,18 @@ export class TransactionEntity {
 
   account: IAccount;
 
-  category: ICategory;
+  category: ICategory | null;
 }
 
 type IAccount = {
+  id: string;
   name: string;
   type: ACCOUNT_TYPE;
   subType: SUB_ACCOUNT_TYPE;
 };
 
 type ICategory = {
+  id: string;
   name: string;
-  icon: string;
+  icon: string | null;
 };

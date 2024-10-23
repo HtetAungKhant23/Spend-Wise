@@ -11,9 +11,9 @@ export class AccountEntity {
 
   balance: number;
 
-  transactions: ITransaction[];
+  transactions?: ITransaction[];
 
-  constructor(id: string, name: string, type: ACCOUNT_TYPE, subType: SUB_ACCOUNT_TYPE, balance: number, transactions: ITransaction[]) {
+  constructor(id: string, name: string, type: ACCOUNT_TYPE, subType: SUB_ACCOUNT_TYPE, balance: number, transactions?: ITransaction[]) {
     this.id = id;
     this.name = name;
     this.type = type;

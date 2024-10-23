@@ -45,14 +45,14 @@ export class TransactionController {
       }),
     }),
   )
-  async create(@Body() dto: TransactionDto, @UploadedFile() file: Express.Multer.File) {
+  async create(@Body() dto: TransactionDto, @UploadedFile() file: Express.Multer.File, @CurrentUser() user: IAuthUser) {
     try {
       let url;
       if (file) {
         url = await this.cloudinaryService.uploadImage(file.path, 'transaction');
         // to delete file in uploads folder
       }
-      await this.transactionService.create(dto, url);
+      await this.transactionService.create(dto, url, user.id);
       return {
         _data: {},
         _metadata: {

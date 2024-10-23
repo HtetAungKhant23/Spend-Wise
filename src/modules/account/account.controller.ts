@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, HttpStatus, Inject, Param, Patch, Post, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
 import { CurrentUser, IAuthUser } from '@app/core/decorators/auth.decorators';
 import { ExceptionConstants } from '@app/core/exceptions/constants';
 import { BadRequestException } from '@app/core/exceptions/bad-request.exception';
@@ -61,29 +61,29 @@ export class AccountController {
     }
   }
 
-  // @Get(':id')
-  // @ApiBearerAuth()
-  // @UseGuards(UserAuthGuard)
-  // @ApiParam({ type: String, name: 'id' })
-  // async getDetail(@CurrentUser() user: IAuthUser, @Param('id') id: string) {
-  //   try {
-  //     const accounts = await this.accountService.getDetail(user.id, id);
-  //     return {
-  //       _data: accounts,
-  //       _metadata: {
-  //         message: 'Account successfully fetched',
-  //         statusCode: HttpStatus.OK,
-  //       },
-  //     };
-  //   } catch (err) {
-  //     throw new BadRequestException({
-  //       message: err.message,
-  //       cause: new Error(err),
-  //       code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
-  //       description: 'Failed to fetch account',
-  //     });
-  //   }
-  // }
+  @Get(':id')
+  @ApiBearerAuth()
+  @UseGuards(UserAuthGuard)
+  @ApiParam({ type: String, name: 'id' })
+  async getDetail(@CurrentUser() user: IAuthUser, @Param('id') id: string) {
+    try {
+      const accounts = await this.accountService.getDetail(user.id, id);
+      return {
+        _data: accounts,
+        _metadata: {
+          message: 'Account successfully fetched',
+          statusCode: HttpStatus.OK,
+        },
+      };
+    } catch (err) {
+      throw new BadRequestException({
+        message: err.message,
+        cause: new Error(err),
+        code: ExceptionConstants.BadRequestCodes.UNEXPECTED_ERROR,
+        description: 'Failed to fetch account',
+      });
+    }
+  }
 
   @Patch(':id')
   @ApiBearerAuth()
