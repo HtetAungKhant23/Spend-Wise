@@ -2,8 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@app/shared/prisma/prisma.service';
 import { ExceptionConstants } from '@app/core/exceptions/constants';
 import { BadRequestException } from '@app/core/exceptions/bad-request.exception';
+import { Prisma } from '@prisma/client';
+import { IPagination, PaginationResponse } from '@app/core/decorators/pagination.decorator';
 import { ITransactionService } from './interface/transaction-service.interface';
 import { TransactionDto } from './dto/transaction.dto';
+import { TransactionsEntity } from './entity/transactions.entity';
 
 @Injectable()
 export class TransactionService implements ITransactionService {
@@ -11,6 +14,16 @@ export class TransactionService implements ITransactionService {
 
   async create(dto: TransactionDto, url: any, userId: string): Promise<void> {
     try {
+      if (dto?.from) {
+        const enough = await this.checkEnoughBalance(dto.from, +dto.amount);
+        if (!enough) {
+          throw new BadRequestException({
+            message: `Insufficient balance`,
+            code: ExceptionConstants.BadRequestCodes.RESOURCE_ALREADY_EXISTS,
+          });
+        }
+      }
+
       await this.dbService.transaction.create({
         data: {
           remark: dto.remark,
@@ -66,102 +79,67 @@ export class TransactionService implements ITransactionService {
     }
   }
 
-  async get(userId: string): Promise<any> {
-    const transactions = await this.dbService.transaction.findMany({
+  async get(userId: string, { limit, offset }: IPagination): Promise<PaginationResponse<TransactionsEntity>> {
+    const rawTransactions = `
+        SELECT
+            tr.id,
+            tr.remark,
+            tr.image,
+            tr.amount,
+            tr.type,
+            cate.id AS "categoryId",
+            cate.name,
+            cate.icon,
+            tr.created_at
+            FROM transactions tr
+            LEFT JOIN categories cate ON cate.id = tr.category_id
+        WHERE tr.user_id = '${userId}'
+        ORDER BY created_at DESC
+        LIMIT '${limit}' OFFSET '${offset}';
+      `;
+
+    const rawTotalCount = `
+      SELECT
+          coalesce(cast(count(*) AS INTEGER), 0) AS "totalCounts"
+      FROM transactions tr
+          LEFT JOIN categories cate ON cate.id = tr.category_id
+      WHERE tr.user_id = '${userId}';
+    `;
+
+    const transactions: any[] = await this.dbService.$queryRaw(Prisma.sql([rawTransactions]));
+    const total: any = await this.dbService.$queryRaw(Prisma.sql([rawTotalCount]));
+
+    return {
+      result: transactions?.map((transaction) => {
+        return new TransactionsEntity(
+          transaction.id,
+          transaction.remark,
+          transaction.image,
+          transaction.amount,
+          transaction.type,
+          transaction?.categoryId && {
+            id: transaction.categoryId,
+            name: transaction.name,
+            icon: transaction.icon,
+          },
+          transaction.created_at,
+        );
+      }),
+      total: +total[0].totalCounts.toString(),
+    };
+  }
+
+  private async checkEnoughBalance(accountId: string, amount: number): Promise<boolean> {
+    const account = await this.dbService.account.findUnique({
       where: {
-        OR: [
-          {
-            type: 'EXPENSE',
-            fromAccount: {
-              isDeleted: false,
-            },
-          },
-          {
-            type: 'INCOME',
-            toAccount: {
-              isDeleted: false,
-            },
-          },
-        ],
-        userId,
-      },
-      include: {
-        fromAccount: {
-          include: {
-            fromTransactions: {
-              include: {
-                category: true,
-              },
-            },
-            toTransactions: {
-              include: {
-                category: true,
-              },
-            },
-          },
-        },
-        toAccount: {
-          include: {
-            fromTransactions: {
-              include: {
-                category: true,
-              },
-            },
-            toTransactions: {
-              include: {
-                category: true,
-              },
-            },
-          },
+        id: accountId,
+        isDeleted: false,
+        balance: {
+          gte: amount,
         },
       },
     });
 
-    return transactions;
-
-    // const result = [];
-
-    // for (let i = 0; i < transactions.length; i += 1) {
-    //   const transaction = transactions[i];
-    //   for (let j = 0; j < transaction?.fromAccount?.fromTransactions?.length; j += 1) {
-    //     const fromTran = transactions.fromTransactions[i];
-    //     const cate = fromTran?.category
-    //       ? {
-    //           id: fromTran?.category.id,
-    //           name: fromTran?.category.name,
-    //           icon: fromTran?.category?.icon,
-    //         }
-    //       : null;
-    //     transactions.push({
-    //       id: fromTran?.id || '',
-    //       remark: fromTran?.remark || '',
-    //       amount: fromTran?.amount || 0,
-    //       type: fromTran?.type || 'INCOME',
-    //       createdAt: fromTran?.createdAt || new Date(),
-    //       category: cate,
-    //     });
-    //   }
-    // }
-
-    // for (let i = 0; i < account.toTransactions.length; i += 1) {
-    //   const toTran = account.toTransactions[i];
-    //   const cate = toTran?.category
-    //     ? {
-    //         id: toTran?.category.id,
-    //         name: toTran?.category.name,
-    //         icon: toTran?.category?.icon,
-    //       }
-    //     : null;
-    //   transactions.push({
-    //     id: toTran?.id || '',
-    //     remark: toTran?.remark || '',
-    //     amount: toTran?.amount || 0,
-    //     type: toTran?.type || 'INCOME',
-    //     createdAt: toTran?.createdAt || new Date(),
-    //     category: cate,
-    //   });
-    // }
-
-    // return new TransactionEntity();
+    return !!account;
   }
 }

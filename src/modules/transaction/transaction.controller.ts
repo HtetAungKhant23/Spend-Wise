@@ -10,13 +10,15 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ExceptionConstants } from '@app/core/exceptions/constants';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
 import { diskStorage } from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import { CloudinaryService } from '@app/shared/upload/cloudinary.service';
 import { CurrentUser, IAuthUser } from '@app/core/decorators/auth.decorators';
+import { PaginationDto } from '@app/core/dto/pagination.dto';
+import { IPagination, Pagination } from '@app/core/decorators/pagination.decorator';
 import { TransactionService } from './transaction.service';
 import { ITransactionService } from './interface/transaction-service.interface';
 import { TransactionDto } from './dto/transaction.dto';
@@ -73,9 +75,10 @@ export class TransactionController {
   @Get('')
   @ApiBearerAuth()
   @UseGuards(UserAuthGuard)
-  async get(@CurrentUser() user: IAuthUser) {
+  @ApiQuery({ type: PaginationDto })
+  async get(@CurrentUser() user: IAuthUser, @Pagination() paginate: IPagination) {
     try {
-      const transactions = await this.transactionService.get(user.id);
+      const transactions = await this.transactionService.get(user.id, paginate);
       return {
         _data: transactions,
         _metadata: {
@@ -84,6 +87,7 @@ export class TransactionController {
         },
       };
     } catch (err) {
+      console.log({ err });
       throw new BadRequestException({
         message: err.message,
         cause: new Error(err),
