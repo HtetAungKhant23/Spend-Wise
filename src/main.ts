@@ -6,6 +6,7 @@ import { createDocument } from '@core/docs/swagger';
 import { Logger, ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import * as morgan from 'morgan';
 import axios from 'axios';
 import { WinstonModule } from 'nest-winston';
 import { AppModule } from './app.module';
@@ -29,6 +30,7 @@ async function bootstrap() {
   });
 
   app.enableCors({ origin: '*' });
+  app.use(morgan('dev'));
   app.useGlobalPipes(new ValidationPipe());
   const configService = app.get(ConfigService);
   const tz = configService.get<string>('app.tz');
