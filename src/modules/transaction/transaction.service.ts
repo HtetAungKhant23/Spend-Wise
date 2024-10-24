@@ -117,8 +117,6 @@ export class TransactionService implements ITransactionService {
       },
     });
 
-    console.log({ transactions });
-
     return transactions;
 
     // const result = [];
