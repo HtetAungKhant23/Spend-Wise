@@ -36,4 +36,5 @@ type ICategory = {
   id: string;
   name: string;
   icon: string | null;
+  isPrivate: boolean;
 };

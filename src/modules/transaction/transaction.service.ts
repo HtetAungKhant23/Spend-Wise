@@ -90,6 +90,7 @@ export class TransactionService implements ITransactionService {
             cate.id AS "categoryId",
             cate.name,
             cate.icon,
+            cate.is_private,
             tr.created_at
             FROM transactions tr
             LEFT JOIN categories cate ON cate.id = tr.category_id
@@ -121,6 +122,7 @@ export class TransactionService implements ITransactionService {
             id: transaction.categoryId,
             name: transaction.name,
             icon: transaction.icon,
+            isPrivate: transaction.is_private,
           },
           transaction.created_at,
         );

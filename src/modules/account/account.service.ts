@@ -11,7 +11,7 @@ import { AccountEntity } from './entity/account.entity';
 export class AccountService implements IAccountService {
   constructor(private readonly dbService: PrismaService) {}
 
-  async create(userId: string, dto: AccountDto): Promise<any> {
+  async create(userId: string, dto: AccountDto): Promise<void> {
     const existAccount = await this.dbService.account.findFirst({
       where: {
         subType: dto.subType,
@@ -131,7 +131,7 @@ export class AccountService implements IAccountService {
   //   return new AccountEntity(account.id, account.name, account.type, account.subType, account.balance, transactions);
   // }
 
-  async getDetail(userId: string, id: string): Promise<AccountEntity> {
+  async getDetail(id: string): Promise<AccountEntity> {
     const rawQuery = `
       SELECT
           acc.id,
@@ -146,7 +146,8 @@ export class AccountService implements IAccountService {
           tr.created_at,
           cate.id AS "categoryId",
           cate.name AS "categoryName",
-          cate.icon
+          cate.icon,
+          cate.is_private
           FROM accounts acc
           JOIN transactions tr ON acc.id = tr.from_id OR acc.id = tr.to_id
           LEFT JOIN categories cate ON tr.category_id = cate.id
@@ -180,6 +181,7 @@ export class AccountService implements IAccountService {
           id: transaction.categoryId,
           name: transaction.categoryName,
           icon: transaction.icon,
+          isPrivate: transaction.is_private,
         },
         createdAt: transaction.created_at,
       });

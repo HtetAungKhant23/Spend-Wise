@@ -65,9 +65,9 @@ export class AccountController {
   @ApiBearerAuth()
   @UseGuards(UserAuthGuard)
   @ApiParam({ type: String, name: 'id' })
-  async getDetail(@CurrentUser() user: IAuthUser, @Param('id') id: string) {
+  async getDetail(@Param('id') id: string) {
     try {
-      const accounts = await this.accountService.getDetail(user.id, id);
+      const accounts = await this.accountService.getDetail(id);
       return {
         _data: accounts,
         _metadata: {
