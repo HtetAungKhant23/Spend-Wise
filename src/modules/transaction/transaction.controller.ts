@@ -5,13 +5,12 @@ import {
   Get,
   HttpStatus,
   Inject,
-  Param,
   Post,
   UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ExceptionConstants } from '@app/core/exceptions/constants';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
 import { diskStorage } from 'multer';
