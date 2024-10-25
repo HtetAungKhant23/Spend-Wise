@@ -24,6 +24,7 @@ export class TransactionsEntity {
   constructor(
     id: string,
     remark: string,
+    description: string,
     image: string | null,
     amount: number,
     type: TRANSACTION_TYPE,
@@ -34,6 +35,7 @@ export class TransactionsEntity {
   ) {
     this.id = id;
     this.remark = remark;
+    this.description = description;
     this.image = image;
     this.amount = amount;
     this.type = type;

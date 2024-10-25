@@ -85,6 +85,7 @@ export class TransactionService implements ITransactionService {
         SELECT
             tr.id,
             tr.remark,
+            tr.description,
             tr.image,
             tr.amount,
             tr.type,
@@ -126,6 +127,7 @@ export class TransactionService implements ITransactionService {
         return new TransactionsEntity(
           transaction.id,
           transaction.remark,
+          transaction.description,
           transaction.image,
           transaction.amount,
           transaction.type,
