@@ -80,6 +80,7 @@ model Transaction {
 model Category {
   id        String  @id @default(uuid())
   name      String
+  slug      String
   icon      String?
   isPrivate Boolean @default(false) @map("is_private")
   isDeleted Boolean @default(false) @map("is_deleted")
@@ -91,7 +92,7 @@ model Category {
   transactions  Transaction[]
   targetBudgets TargetBudget[]
 
-  @@unique([userId, name])
+  @@unique([userId, slug])
   @@map("categories")
 }
 
@@ -126,7 +127,7 @@ enum SUB_ACCOUNT_TYPE {
   WAVEPAY
   OKDOLLAR
   KBZBANK
-  AYANBANK
+  AYABANK
   CBBANK
   AGDBANK
   YOMABANK

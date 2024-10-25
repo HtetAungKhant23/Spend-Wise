@@ -1,10 +1,5 @@
 import { BadRequestException, createParamDecorator, ExecutionContext } from '@nestjs/common';
 
-export interface PaginationResponse<T> {
-  result: T[];
-  total: number;
-}
-
 export interface IPagination {
   page: number;
   limit: number;

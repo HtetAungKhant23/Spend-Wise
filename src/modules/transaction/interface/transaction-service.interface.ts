@@ -1,4 +1,5 @@
-import { IPagination, PaginationResponse } from '@app/core/decorators/pagination.decorator';
+import { IPagination } from '@app/core/decorators/pagination.decorator';
+import { PaginationResponse } from '@app/core/interfaces/response.interface';
 import { TransactionDto } from '../dto/transaction.dto';
 import { TransactionsEntity } from '../entity/transactions.entity';
 

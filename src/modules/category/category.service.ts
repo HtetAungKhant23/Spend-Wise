@@ -13,7 +13,7 @@ export class CategoryService implements ICategoryService {
   async create(dto: CategoryDto, userId: string): Promise<CategoryEntity> {
     const existCategory = await this.dbService.category.findFirst({
       where: {
-        name: dto.name,
+        slug: dto.name,
         userId,
         isPrivate: true,
         isDeleted: false,
@@ -30,6 +30,7 @@ export class CategoryService implements ICategoryService {
     const category = await this.dbService.category.create({
       data: {
         name: dto.name,
+        slug: dto.name,
         icon: dto?.icon,
         isPrivate: dto.private,
         ...(dto.private && { userId }),
@@ -81,7 +82,7 @@ export class CategoryService implements ICategoryService {
         id: existCategory.id,
       },
       data: {
-        name: `deleted-${existCategory.name}-${Date.now()}`,
+        slug: `deleted-${existCategory.slug}-${Date.now()}`,
         isDeleted: true,
       },
     });

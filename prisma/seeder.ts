@@ -11,6 +11,7 @@ async function seedCategory() {
     await dbService.category.create({
       data: {
         name: cate,
+        slug: cate,
       },
     });
   });

@@ -3,7 +3,8 @@ import { PrismaService } from '@app/shared/prisma/prisma.service';
 import { ExceptionConstants } from '@app/core/exceptions/constants';
 import { BadRequestException } from '@app/core/exceptions/bad-request.exception';
 import { Prisma } from '@prisma/client';
-import { IPagination, PaginationResponse } from '@app/core/decorators/pagination.decorator';
+import { PaginationResponse } from '@app/core/interfaces/response.interface';
+import { IPagination } from '@app/core/decorators/pagination.decorator';
 import { ITransactionService } from './interface/transaction-service.interface';
 import { TransactionDto } from './dto/transaction.dto';
 import { TransactionsEntity } from './entity/transactions.entity';
@@ -91,9 +92,19 @@ export class TransactionService implements ITransactionService {
             cate.name,
             cate.icon,
             cate.is_private,
+            facc.id AS "fromId",
+            facc.name AS "fromName",
+            facc.type AS "fromType",
+            facc."subType" AS "fromSubType",
+            tacc.id AS "toId",
+            tacc.name AS "toName",
+            tacc.type AS "toType",
+            tacc."subType" AS "toSubType",
             tr.created_at
-            FROM transactions tr
+        FROM transactions tr
             LEFT JOIN categories cate ON cate.id = tr.category_id
+            LEFT JOIN accounts facc ON facc.id = tr.from_id
+            LEFT JOIN accounts tacc ON tacc.id = tr.to_id
         WHERE tr.user_id = '${userId}'
         ORDER BY created_at DESC
         LIMIT '${limit}' OFFSET '${offset}';
@@ -118,6 +129,18 @@ export class TransactionService implements ITransactionService {
           transaction.image,
           transaction.amount,
           transaction.type,
+          transaction?.fromId && {
+            id: transaction.fromId,
+            name: transaction.fromName,
+            type: transaction.fromType,
+            subType: transaction.fromSubType,
+          },
+          transaction?.toId && {
+            id: transaction.toId,
+            name: transaction.toName,
+            type: transaction.toType,
+            subType: transaction.toSubType,
+          },
           transaction?.categoryId && {
             id: transaction.categoryId,
             name: transaction.name,

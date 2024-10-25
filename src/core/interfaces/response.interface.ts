@@ -20,3 +20,8 @@ export interface IResponsePagingPagination {
   totalPage: number;
   total: number;
 }
+
+export interface PaginationResponse<T> {
+  result: T[];
+  total: number;
+}
