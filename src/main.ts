@@ -51,7 +51,7 @@ async function bootstrap() {
   createDocument(app);
   await app.listen(PORT);
   if (process.env.NODE_ENV !== 'development') {
-    setInterval(keepAliveServer, 60000);
+    setInterval(keepAliveServer, 300000);
   }
   logger.log(`Application listening on port ${PORT}`);
 }
